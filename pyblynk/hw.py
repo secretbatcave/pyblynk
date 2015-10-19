@@ -1,33 +1,39 @@
 from . import common
 
 class Hardware():
+	'''The class that emulates the arduino/other
+	hardware interfaces
+	'''
 	_Media=None
-	
+
 	def __init__(self,media):
 		self._Media=media
-		
-		
+
+
 	def manage(self):
+		'''This blocking function holds the connection open
+		to the blynk server and handles the output
+		'''
 		if self._Media:
 			#print('manage')
 			self._Media.keepConnection()
 			rx_frame=self._Media.rxFrame()
-			
+
 			if rx_frame:
-				print(rx_frame)
+				print rx_frame
 				if (rx_frame[0] == common.MSG_HW) or (rx_frame[0] == common.MSG_BRIDGE):
 					data = self._Media.rx(rx_frame[2])
 					params=common.BufferToArgs(data)
 					cmd=params.pop(0)
-					self.OnMessage_HW(
-						cmd,
-						params
-					)
+					self.OnMessage_HW(cmd, params)
 					self._Media.txFrame(common.MSG_RSP,common.MSG_STATUS_OK)
 				else:
 					self.OnMessage_Unknown(rx_frame[0],rx_frame[2])
-					
+
 	def OnMessage_HW(self,cmd,params):
+		'''Parse messages and route them to the correct
+		method
+		'''
 		if cmd=='info':
 			self.OnHW_info()
 		elif cmd=='pm':
@@ -47,26 +53,12 @@ class Hardware():
 			pin = int(params.pop(0))
 			val=self.OnDigitalRead(pin)
 
-			self._Media.txFrameData(
-				common.MSG_HW,
-				common.ArgsToData(
-					'dw',
-					pin,
-					val
-				)
-			)
+			self._Media.txFrameData(common.MSG_HW, common.ArgsToData('dw', pin, val))
 		elif cmd=='ar':
 			pin = int(params.pop(0))
 			val=self.OnAnalogRead(pin)
 
-			self._Media.txFrameData(
-				common.MSG_HW,
-				common.ArgsToBuffer(
-					'aw',
-					pin,
-					val
-				)
-			)
+			self._Media.txFrameData(common.MSG_HW, common.ArgsToBuffer('aw', pin, val))
 		elif cmd=='vw':
 			pin = int(params.pop(0))
 			val = params.pop(0)
@@ -75,20 +67,13 @@ class Hardware():
 			pin = int(params.pop(0))
 			val=self.OnVirtualRead(pin)
 
-			self._Media.txFrameData(
-				common.MSG_HW,
-				common.ArgsToBuffer(
-					'vw',
-					pin,
-					val
-				)
-			)
+			self._Media.txFrameData(common.MSG_HW, common.ArgsToBuffer('vw', pin, val))
 		else:
-			print("Unknown HW-Command %s"%cmd)
-	
+			print "Unknown HW-Command %s" %cmd
+
 	def OnHW_info(self):
 		pass
-	
+
 	def OnPinMode(self,pin,mode):
 		print('OnPinMode',pin,mode)
 
@@ -105,16 +90,16 @@ class Hardware():
 	def OnAnalogRead(self,pin):
 		print('OnAnalogRead',pin)
 		return 0
-	
+
 	def OnVirtualWrite(self,pin,val):
 		print('OnVirtualWrite',pin,val)
-		
+
 	def OnVirtualRead(self,pin):
 		print('OnVirtualRead',pin)
 		return 0
-	
+
 	def OnMessage_Unknown(self,msg_type,data):
 		pass
-	
+
 	def OnMessage_Ping(self,data):
 		pass
