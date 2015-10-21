@@ -8,21 +8,6 @@ From the off this library is meant for overloading. The idea is that you import 
 In the mean time have a look at the original output:
 
 ## example
-There is a simple example which connects to the blynk service and prints out detailed frame info:
+There is a simple example which connects overloads the basclass and returns some fake data. 
 
-```
-erazor@s9 ~/d/p/t/examples> python2 hw.py 
-Auth successfull
-(20, 36, 14)
-('OnPinMode', 0, 'out')
-('OnPinMode', 2, 'out')
-(20, 46, 4)
-('OnVirtualRead', 1)
-(20, 47, 4)
-('OnVirtualRead', 1)
-(20, 48, 4)
-('OnVirtualRead', 1)
-(20, 49, 4)
-```
 
-For a custom implementation you only need to overload **lib.hm.Hardware** .
