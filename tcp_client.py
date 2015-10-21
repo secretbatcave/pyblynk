@@ -1,6 +1,9 @@
 import time
 import socket
-import common
+#import hexdump
+import pyblynk.common as common
+
+#pylint: disable=w0511
 
 class TCP_Client():
     _Server = None
@@ -43,7 +46,8 @@ class TCP_Client():
             
     def rx(self, length):
         if self._Socket:
-            d = []
+            data = []
+            #TODO can this be done better? need to look at the protocol properly
             l = 0
             while l < length:
                 r = ''
@@ -60,10 +64,11 @@ class TCP_Client():
                 if not r:
                     self.connected = False
                     return ''
-                d.append(r)
-                #print(d)
+                data.append(r)
+                #print(data)
                 l = l + len(r)
-            return ''.join(d)
+                #hexdump.hexdump(str(data))
+            return ''.join(data)
 
     def rxFrame(self):
         response = self.rx(common.ProtocolHeader.size)

@@ -1,8 +1,8 @@
-import common
+import pyblynk.common as common
 
 class Hardware():
     '''The class that emulates the arduino/other
-    hardware interfaces
+    hardware board interface for blynk
     '''
     _Media = None
 
@@ -12,7 +12,9 @@ class Hardware():
 
     def manage(self):
         '''This blocking function holds the connection open
-        to the blynk server and handles the output
+        to the blynk server and handles the output. Calling this
+        enters a loop which connects to the blynk server and waits
+        for updates.
         '''
         if self._Media:
             #print('manage')
@@ -32,7 +34,7 @@ class Hardware():
 
     def OnMessage_HW(self, cmd, params):
         '''Parse messages and route them to the correct
-        method
+        method inside this class
         '''
         if cmd == 'info':
             self.OnHW_info()
@@ -52,12 +54,11 @@ class Hardware():
         elif cmd == 'dr':
             pin = int(params.pop(0))
             val = self.OnDigitalRead(pin)
-
+            print "READING"
             self._Media.txFrameData(common.MSG_HW, common.ArgsToBuffer('dw', pin, val))
         elif cmd == 'ar':
             pin = int(params.pop(0))
             val = self.OnAnalogRead(pin)
-
             self._Media.txFrameData(common.MSG_HW, common.ArgsToBuffer('aw', pin, val))
         elif cmd == 'vw':
             pin = int(params.pop(0))
@@ -66,10 +67,13 @@ class Hardware():
         elif cmd == 'vr':
             pin = int(params.pop(0))
             val = self.OnVirtualRead(pin)
-
             self._Media.txFrameData(common.MSG_HW, common.ArgsToBuffer('vw', pin, val))
         else:
             print "Unknown HW-Command %s" % cmd
+
+    ##
+    #This section is full of stub methods for overloading
+    ##
 
     def OnHW_info(self):
         pass
@@ -103,3 +107,17 @@ class Hardware():
 
     def OnMessage_Ping(self, data):
         pass
+
+    def PushDigitalRead(self, pin, val):
+        '''Pushs the value, back  to the blynk server so you
+        can switch on LEDs
+        '''
+        self._Media.txFrameData(common.MSG_HW, common.ArgsToBuffer('dw', pin, val))
+
+    def PushVirtualRead(self, pin, val):
+        '''Pushs the value, back  to the blynk server so you
+        can switch on LEDs
+        '''
+        self._Media.txFrameData(common.MSG_HW, common.ArgsToBuffer('vw', pin, val))
+
+
