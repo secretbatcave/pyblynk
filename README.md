@@ -1,9 +1,11 @@
 # pyblynk - Blynk helpers for Python
 
+This is just another Python implementation of the Blynk service ( http://blynk.cc ). I have forked (https://github.com/erazor83/pyblynk) and changed it quite radically
 
-So this is just another Python implementation of the Blynk service ( http://blynk.cc ).
+## How to use:
+From the off this library is meant for overloading. The idea is that you import the Hardware library and use is as a base class. An example will follow.
 
-I plan to also add server functionalty to implement a private cloud service to be indedepent from cloud.blynk.cc .
+In the mean time have a look at the original output:
 
 ## example
 There is a simple example which connects to the blynk service and prints out detailed frame info:
