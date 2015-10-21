@@ -1,7 +1,6 @@
 import time
 import socket
-
-from . import common
+import common
 
 class TCP_Client():
     _Server = None

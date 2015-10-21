@@ -1,4 +1,4 @@
-from . import common
+import common
 
 class Hardware():
     '''The class that emulates the arduino/other
